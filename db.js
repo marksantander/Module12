@@ -56,4 +56,6 @@ connection.query(createRolesTableQuery, (err, results) => {
   console.log('Roles table created!');
 });
 
+console.log('Seed data inserted successfully!');
+
 connection.end();
