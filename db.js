@@ -19,12 +19,12 @@ const createTableQuery = `CREATE TABLE employees (
   PRIMARY KEY (id)
 )`;
 
-const createTableQuery = `CREATE TABLE department (
+const createTableQuery = `CREATE TABLE departments (
   id INT PRIMARY KEY,
   name VARCHAR (30) NOT NULL,
 )`;
 
-const createTableQuery = `CREATE TABLE role (
+const createTableQuery = `CREATE TABLE roles (
   id INT PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
   salary DECIMAL NOT NULL,
