@@ -4,22 +4,40 @@ const connection = mysql2.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: 'database',
-  database: 'employee_database',
+  password: 'root',
+  database: 'db1',
 });
 
 //module.exports = connection;
 
-connection.connect();
+const createTableQuery = `CREATE TABLE employees (
+  id INT PRIMARY KEY,
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  role_id INT,
+  manager_id INT
+  PRIMARY KEY (id)
+)`;
 
-const query = 'SELECT * FROM users';
+const createTableQuery = `CREATE TABLE departments (
+  id INT PRIMARY KEY,
+  name VARCHAR (30) NOT NULL,
+)`;
 
-connection.query(query, (err, results) => {
+const createTableQuery = `CREATE TABLE roles (
+  id INT PRIMARY KEY,
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  department_id INT,
+)`;
+
+connection.query(createTableQuery, (err, results) => {
   if (err) {
     console.log(err);
-  } else {
-    console.log(results);
+    return;
   }
 
-  connection.end();
+  console.log('Table created!');
 });
+
+connection.end();

@@ -53,7 +53,7 @@ console.table(results);
 };
 
 const viewEmployees = async () => {
-  const query = SELECT employees.id, employees.first_name, employees.last_name, roles.title AS role, departments.name AS department, roles.salary AS salary, employees.manager_id AS manager FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id;
+  const query = `SELECT employees.id, employees.first_name, employees.last_name, roles.title AS role, departments.name AS department, roles.salary AS salary, employees.manager_id AS manager FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id`;
   const [results] = await connection.query(query);
 
 console.table(results);
