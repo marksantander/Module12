@@ -53,8 +53,8 @@ console.table(results);
 };
 
 const viewEmployees = async () => {
-const query = SELECT employees.id, employees.first_name, employees.last_name, roles.title AS role, departments.name AS department, roles.salary AS salary, employees.manager_id AS manager FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id;
-const [results] = await connection.query(query);
+  const query = SELECT employees.id, employees.first_name, employees.last_name, roles.title AS role, departments.name AS department, roles.salary AS salary, employees.manager_id AS manager FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id;
+  const [results] = await connection.query(query);
 
 console.table(results);
 };
@@ -92,5 +92,14 @@ message: 'Enter salary:',
 type: 'list',
 name: 'department_id',
 message: 'Select the department for the role:',
+choices: departments.map((department) => department.name),
 },
-])};
+]);
+if (salary < 0) {
+  throw new Error('Salary must be > 0.');
+}
+const query = 'INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)';
+const [results] = await connection.query(query, [title, salary, department_id]);
+
+console.log('Role added');
+};
