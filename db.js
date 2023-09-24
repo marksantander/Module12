@@ -4,8 +4,9 @@ const connection = mysql2.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  password: 'database',
-  database: 'employee_database',
+  password: 'root',
+  database: 'db1',
+  //database: 'employee_database',
 });
 
 //module.exports = connection;
