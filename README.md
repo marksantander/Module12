@@ -6,4 +6,4 @@ Dependancies: Node.js, Inquirer, and MySQL.
 
 Credits: bard.google.com, mysql.com, npmjs.com
 
-Video: https://drive.google.com/file/d/1TwpasbX4ShLGQkVpjZ4ffx8kqCwlnGk8/view
+Video: https://drive.google.com/file/d/1Qd3WHfkL1EbNDz8XDmcK9uGwVtiTvnXV/view
