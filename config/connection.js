@@ -8,11 +8,10 @@ const pool = mysql.createPool({
   database: 'employee_tracker',
 });
 
-const query = async (sql, args) => {
+async function runSeeds() {
   const connection = await pool.getConnection();
-  const results = await connection.query(sql, args);
+  await connection.query('SOURCE seeds.sql');
   await connection.release();
-  return results;
-};
+}
 
-module.exports = query;
+runSeeds();
