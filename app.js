@@ -1,105 +1,107 @@
+const query = require("./config/connection");
+
 const inquirer = require('inquirer');
-const connection = require('./db');
 
-const mainMenu = async () => {
-const { choice } = await inquirer.prompt([
-{
-type: 'list',
-name: 'choice',
-message: 'What would you like to do?',
-choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role'],
-},
-]);
+const options = [
+  { name: 'View departments', value: 'viewDepartments' },
+  { name: 'View roles', value: 'viewRoles' },
+  { name: 'View employees', value: 'viewEmployees' },
+  { name: 'Add a department', value: 'addDepartment' },
+  { name: 'Add a role', value: 'addRole' },
+  { name: 'Add an employee', value: 'addEmployee' },
+  { name: 'Edit a department', value: 'editDepartment' },
+  { name: 'Edit a role', value: 'editRole' },
+  { name: 'Edit an employee', value: 'editEmployee' },
+  { name: 'Delete a department', value: 'deleteDepartment' },
+  { name: 'Delete a role', value: 'deleteRole' },
+  { name: 'Delete an employee', value: 'deleteEmployee' },
+  { name: 'Exit', value: 'exit' },
+];
 
-switch (choice) {
-case 'View all departments':
-await viewDepartments();
-break;
-case 'View all roles':
-await viewRoles();
-break;
-case 'View all employees':
-await viewEmployees();
-break;
-case 'Add a department':
-await addDepartment();
-break;
-case 'Add a role':
-await addRole();
-break;
-case 'Add an employee':
-await addEmployee();
-break;
-case 'Update an employee role':
-await updateEmployeeRole();
-break;
-default:
-console.log('Invalid choice.');
+const prompt = inquirer.createPromptModule();
+
+async function displayMenu() {
+  const response = await prompt({
+    type: 'list',
+    name: 'option',
+    message: 'What would you like to do?',
+    choices: options,
+  });
+
+  switch (response.option) {
+    case 'viewDepartments':
+      await viewDepartments();
+      break;
+    case 'viewRoles':
+      await viewRoles();
+      break;
+    case 'viewEmployees':
+      await viewEmployees();
+      break;
+    case 'addDepartment':
+      await addDepartment();
+      break;
+    case 'addRole':
+      await addRole();
+      break;
+    case 'addEmployee':
+      await addEmployee();
+      break;
+    case 'editDepartment':
+      await editDepartment();
+      break;
+    case 'editRole':
+      await editRole();
+      break;
+    case 'editEmployee':
+      await editEmployee();
+      break;
+    case 'deleteDepartment':
+      await deleteDepartment();
+      break;
+    case 'deleteRole':
+      await deleteRole();
+      break;
+    case 'deleteEmployee':
+      await deleteEmployee();
+      break;
+    case 'exit':
+      process.exit();
+      break;
+  }
 }
-};
+displayMenu();
 
-const viewDepartments = async () => {
-const query = 'SELECT * FROM departments';
-const [results] = await connection.query(query);
+class EmployeeTracker {
+  constructor() {
+    this.departments = [];
+    this.roles = [];
+    this.employees = [];
+  }
 
-console.table(results);
-};
+  async getDepartments() {
+    const results = await query('SELECT * FROM department');
+    this.departments = results;
+    return this.departments;
+  }
 
-const viewRoles = async () => {
-const query = 'SELECT roles.id, roles.title, roles.salary, departments.name AS department FROM roles INNER JOIN departments ON roles.department_id = departments.id';
-const [results] = await connection.query(query);
+  async getRoles() {
+    const results = await query('SELECT * FROM role');
+    this.roles = results;
+    return this.roles;
+  }
 
-console.table(results);
-};
+  async getEmployees() {
+    const results = await query('SELECT * FROM employee');
+    this.employees = results;
+    return this.employees;
+  }
 
-const viewEmployees = async () => {
-  const query = `SELECT employees.id, employees.first_name, employees.last_name, roles.title AS role, departments.name AS department, roles.salary AS salary, employees.manager_id AS manager FROM employees INNER JOIN roles ON employees.role_id = roles.id INNER JOIN departments ON roles.department_id = departments.id`;
-  const [results] = await connection.query(query);
+  async addDepartment(name) {
+    await query('INSERT INTO department (name) VALUES (?)', [name]);
+  }
 
-console.table(results);
-};
-
-const addDepartment = async () => {
-const { name } = await inquirer.prompt([
-{
-type: 'input',
-name: 'name',
-message: 'Enter the name of the department:',
-},
-]);
-
-const query = 'INSERT INTO departments (name) VALUES (?)';
-const [results] = await connection.query(query, [name]);
-
-console.log('Department added');
-};
-
-const addRole = async () => {
-const departments = await connection.query('SELECT * FROM departments');
-
-const { title, salary, department_id } = await inquirer.prompt([
-{
-type: 'input',
-name: 'title',
-message: 'Enter title:',
-},
-{
-type: 'number',
-name: 'salary',
-message: 'Enter salary:',
-},
-{
-type: 'list',
-name: 'department_id',
-message: 'Select the department for the role:',
-choices: departments.map((department) => department.name),
-},
-]);
-if (salary < 0) {
-  throw new Error('Salary must be > 0.');
-}
-const query = 'INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)';
-const [results] = await connection.query(query, [title, salary, department_id]);
-
-console.log('Role added');
+  async addRole(title, salary, departmentId) {
+    await query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [title, salary, departmentId])
+  }
 };
