@@ -1,10 +1,18 @@
-const mysql = require("mysql");
-require('dotenv').config();
+const mysql = require('mysql2');
 
-var connection = mysql.createConnection({
-  host: "localhost",
+const pool = mysql.createPool({
+  host: 'localhost',
   port: 3306,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
+  user: 'root',
+  password: 'root',
+  database: 'employee_tracker',
 });
+
+const query = async (sql, args) => {
+  const connection = await pool.getConnection();
+  const results = await connection.query(sql, args);
+  await connection.release();
+  return results;
+};
+
+module.exports = query;
